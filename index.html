@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Daily Micro-Learning Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #020617;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.12);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.4);
+      --radius-lg: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at top, #1f2937, #020617 55%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px 16px 76px; /* room for bottom nav */
+    }
+
+    header {
+      padding: 12px 16px 20px;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+    }
+
+    h1 {
+      font-size: 26px;
+      margin: 10px 0 4px;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 34rem;
+      line-height: 1.45;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--muted);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #020617, #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 14px 14px 16px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.16), transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(59, 130, 246, 0.18), transparent 58%);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .chip {
+      font-size: 10px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .lesson-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .lesson-topic {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .lesson-text {
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .prompt {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      background: var(--accent);
+      color: #022c22;
+      box-shadow: 0 10px 25px rgba(34, 197, 94, 0.35);
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out,
+        background 0.1s ease-out;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: none;
+    }
+
+    .btn-secondary:active {
+      transform: translateY(1px) scale(0.98);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .btn-small {
+      font-size: 11px;
+      padding: 5px 10px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .topic-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .topic-chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .topic-chip-active {
+      background: var(--accent);
+      color: #022c22;
+      border-color: var(--accent);
+    }
+
+    .scroll-card {
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(75, 85, 99, 0.7) transparent;
+    }
+
+    .scroll-card::-webkit-scrollbar { width: 4px; }
+    .scroll-card::-webkit-scrollbar-track { background: transparent; }
+    .scroll-card::-webkit-scrollbar-thumb {
+      background: rgba(75, 85, 99, 0.9);
+      border-radius: 999px;
+    }
+
+    .list-pill {
+      border-radius: 12px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 8px 10px;
+      margin-bottom: 7px;
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .list-pill-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .list-pill-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .list-pill-text {
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: var(--muted);
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .topic-card, .track-card {
+      border-radius: 14px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 8px;
+      background: rgba(15, 23, 42, 0.96);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .topic-card-header, .track-card-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .topic-emoji, .track-emoji {
+      font-size: 16px;
+    }
+
+    .topic-name, .track-name {
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    .topic-count, .track-desc {
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .topic-desc {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      opacity: 0.9;
+    }
+
+    .screen { display: none; }
+    .screen-active { display: block; }
+
+    .tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 6px 10px 10px;
+      background: rgba(15, 23, 42, 0.98);
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
+      display: flex;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .tabbar-inner {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      gap: 6px;
+      justify-content: space-between;
+    }
+
+    .tab-btn {
+      flex: 1;
+      font-size: 11px;
+      padding: 7px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: #020617;
+      color: var(--muted);
+      box-shadow: none;
+    }
+
+    .tab-btn-active {
+      background: var(--accent);
+      color: #022c22;
+      border-color: var(--accent);
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 6px 0 4px;
+      align-items: center;
+    }
+
+    .controls-row label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 6px 10px;
+      font-size: 12px;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text);
+    }
+
+    .sort-select {
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 6px 8px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 70px;
+      transform: translateX(-50%);
+      background: #10b981;
+      color: #022c22;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-out;
+      z-index: 30;
+    }
+
+    .toast-visible {
+      opacity: 1;
+    }
+
+    @media (min-width: 640px) {
+      header { padding-top: 20px; }
+      h1 { font-size: 30px; }
+      .card { padding: 16px 18px 18px; }
+      .card-title { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Daily Micro-Learning
+      </div>
+      <h1>Learn one tiny thing every day</h1>
+      <p class="subtitle">
+        Science, history, money, faith, life skills. One short idea you can read in under a minute and actually use.
+      </p>
+      <div class="pill-row">
+        <div class="pill">Tiny lessons</div>
+        <div class="pill">Quiz mode</div>
+        <div class="pill">Tracks & search</div>
+      </div>
+    </header>
+
+    <main>
+      <!-- TODAY SCREEN -->
+      <section class="screen screen-active" id="screen-today">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Today’s Micro-Lesson</div>
+                <div class="card-subtitle" id="today-subtitle">
+                  <!-- filled by JS -->
+                </div>
+              </div>
+              <div class="chip">
+                <span class="chip-dot"></span>
+                1 idea / day
+              </div>
+            </div>
+
+            <div class="topic-chips" id="topic-chips-row">
+              <!-- populated by JS -->
+            </div>
+
+            <div class="controls-row">
+              <button id="btn-toggle-quiz" type="button" class="btn-secondary btn-small">
+                Quiz mode: Off
+              </button>
+              <button id="btn-copy" type="button" class="btn-secondary btn-small">
+                Copy to Notes
+              </button>
+            </div>
+
+            <div class="lesson-title" id="today-lesson-title"></div>
+            <div class="lesson-text" id="today-lesson-text"></div>
+
+            <div class="btn-row" id="quiz-answer-row" style="display:none;">
+              <button id="btn-show-answer" type="button">Show answer</button>
+            </div>
+
+            <p class="prompt">
+              Use it: explain this idea in one sentence to someone else today. Teaching locks it in.
+            </p>
+            <div class="btn-row">
+              <button id="btn-shuffle" type="button">⟳ Shuffle in this subject</button>
+              <button id="btn-any" type="button" class="btn-secondary">★ Surprise me (any subject)</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Reflection Prompt</div>
+                <div class="card-subtitle">
+                  Quick journal or Notes thought-starter.
+                </div>
+              </div>
+            </div>
+            <p class="section-label">Prompt</p>
+            <p class="lesson-text" id="reflection-text">
+              Where have I already seen this idea show up in my own life or work?
+            </p>
+            <div class="btn-row">
+              <button id="btn-new-reflection" type="button">✎ New reflection prompt</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- TOPICS / TRACKS SCREEN -->
+      <section class="screen" id="screen-topics">
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Learning Tracks</div>
+                <div class="card-subtitle" id="track-subtitle">
+                  Choose a track to focus what you see.
+                </div>
+              </div>
+              <button id="btn-clear-track" type="button" class="btn-secondary btn-small">
+                Clear track
+              </button>
+            </div>
+            <div class="topic-grid" id="track-grid"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Subjects</div>
+                <div class="card-subtitle">
+                  Tap a subject to jump into those lessons.
+                </div>
+              </div>
+            </div>
+            <div class="topic-grid" id="topic-grid"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- LIBRARY SCREEN -->
+      <section class="screen" id="screen-library">
+        <section class="card scroll-card">
+          <div class="card-inner">
+            <div class="card-header" style="position:sticky;top:0;background:#020617;z-index:2;padding-bottom:8px;">
+              <div>
+                <div class="card-title">Lesson Library</div>
+                <div class="card-subtitle" id="library-subtitle">
+                  All subjects · tap Today to focus on one at a time.
+                </div>
+              </div>
+            </div>
+
+            <div class="controls-row">
+              <input id="search-input" class="search-input" type="search" placeholder="Search lessons..." />
+              <select id="sort-select" class="sort-select">
+                <option value="default">Sort: Default</option>
+                <option value="title">Sort: Title A–Z</option>
+                <option value="topic">Sort: By topic</option>
+              </select>
+            </div>
+
+            <div class="topic-chips" id="library-topic-chips"></div>
+            <div id="library-list"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <p class="footer-note">
+      Tip: Open this file in Safari and “Add to Home Screen” to use it like an app.
+    </p>
+  </div>
+
+  <nav class="tabbar">
+    <div class="tabbar-inner">
+      <button class="tab-btn tab-btn-active" data-screen="screen-today">Today</button>
+      <button class="tab-btn" data-screen="screen-topics">Topics</button>
+      <button class="tab-btn" data-screen="screen-library">Library</button>
+    </div>
+  </nav>
+
+  <div id="toast" class="toast">Copied to clipboard</div>
+
+  <script>
+    // --- Topics ---
+    var TOPICS = [
+      { id: "money",  name: "Money & Work",        emoji: "💰",
+        desc: "Tiny finance, career, and decision-making ideas." },
+      { id: "history", name: "History & Culture",  emoji: "🏛️",
+        desc: "Stories and patterns from the past that repeat." },
+      { id: "science", name: "Science & Curiosity", emoji: "🔬",
+        desc: "Mental models and principles for how the world works." },
+      { id: "faith",  name: "Bible & Faith",       emoji: "✝️",
+        desc: "Short truths and questions to chew on." },
+      { id: "life",   name: "Life Skills",         emoji: "🧭",
+        desc: "Soft skills, communication, and self-management." }
+    ];
+
+    // --- Tracks (feature 8) ---
+    var TRACKS = [
+      {
+        id: "track-money",
+        name: "Money & Career",
+        emoji: "💼",
+        topicIds: ["money", "life"],
+        desc: "Habits and ideas that compound in your work and finances."
+      },
+      {
+        id: "track-faith",
+        name: "Faith & Character",
+        emoji: "✝️",
+        topicIds: ["faith", "life"],
+        desc: "Spiritual health, character, relationships, and daily obedience."
+      },
+      {
+        id: "track-curious",
+        name: "Curious Mind",
+        emoji: "🧠",
+        topicIds: ["science", "history"],
+        desc: "Mental models, stories, and curiosity about how the world works."
+      }
+    ];
+
+    // --- Lessons (with basic tags for Library UI) ---
+    var LESSONS = [
+      // MONEY & WORK
+      { topic: "money", title: "Pay yourself first",
+        text: "Treat saving like a bill. Move a set percentage of income to savings or investing the moment you’re paid, and live on what’s left.",
+        tags: ["money","habits"] },
+      { topic: "money", title: "Total cost thinking",
+        text: "For any purchase, ask: what is the total cost over a year, not just the sticker price? Subscriptions and small habits grow fast.",
+        tags: ["money","spending"] },
+      { topic: "money", title: "Avoid lifestyle creep",
+        text: "When your income rises, pretend only half the raise is real. Save or invest the other half before you adjust your lifestyle.",
+        tags: ["money","income"] },
+      { topic: "money", title: "One-number dashboard",
+        text: "Pick one number to track your financial health (net worth, cash buffer, savings rate). Keep it somewhere you see weekly.",
+        tags: ["money","systems"] },
+      { topic: "money", title: "Time vs money trade",
+        text: "Before spending, ask: am I trading time for this? How many hours of work does this cost me after tax?",
+        tags: ["money","decisions"] },
+      { topic: "money", title: "Asymmetric bets",
+        text: "Look for decisions where the downside is limited but the upside is large: good education, relationships, and skills fit here.",
+        tags: ["money","career"] },
+      { topic: "money", title: "Beware vague goals",
+        text: "“Save more” is not a goal. “Save $300 a month for 12 months” is. Clarity makes progress measurable.",
+        tags: ["money","goals"] },
+      { topic: "money", title: "Separate decision and purchase",
+        text: "Decide what you want and why on one day, then buy later. This gap reduces impulse buying dramatically.",
+        tags: ["money","self-control"] },
+      { topic: "money", title: "Career: rare & useful skills",
+        text: "Your earning power comes from combining skills that are rare together but useful in the market.",
+        tags: ["career","skills"] },
+      { topic: "money", title: "Don’t outsource understanding",
+        text: "You can delegate tasks but not responsibility. Understand the basics of your own finances, even with an advisor.",
+        tags: ["money","responsibility"] },
+      { topic: "money", title: "Small, boring systems",
+        text: "Automatic payments, labeled accounts, and simple budgets beat complex systems you won’t maintain.",
+        tags: ["systems","habits"] },
+      { topic: "money", title: "Own, don’t just consume",
+        text: "Shift slowly from only buying things to owning pieces of productive assets: businesses, skills, or property.",
+        tags: ["money","investing"] },
+
+      // HISTORY & CULTURE
+      { topic: "history", title: "History rhymes",
+        text: "Events don’t repeat exactly, but patterns do. Learn how past booms, busts, and conflicts unfolded to spot echoes today.",
+        tags: ["history","patterns"] },
+      { topic: "history", title: "Incentives shape behavior",
+        text: "Across eras, people respond to incentives more than ideals. To understand a decision, follow the incentives.",
+        tags: ["history","incentives"] },
+      { topic: "history", title: "Ordinary people, big events",
+        text: "Major historical events are the sum of many small, regular decisions by ordinary people—not just famous names.",
+        tags: ["history","perspective"] },
+      { topic: "history", title: "Survivorship bias",
+        text: "We mostly hear stories from those who survived. Remember the invisible graveyard of failed attempts.",
+        tags: ["history","bias"] },
+      { topic: "history", title: "Maps are not neutral",
+        text: "Every story, chart, or map chooses what to include and what to leave out. Ask: whose perspective is this?",
+        tags: ["history","media"] },
+      { topic: "history", title: "Technology reshapes norms",
+        text: "Printing press, radio, internet, AI—each changed what people believed and how quickly ideas spread.",
+        tags: ["history","technology"] },
+      { topic: "history", title: "Progress + fragility",
+        text: "Societies often get richer and more fragile at the same time. Luxury can weaken the habits that created it.",
+        tags: ["history","culture"] },
+      { topic: "history", title: "Culture as default settings",
+        text: "Culture is a set of default answers to “how do we live here?” Learn them before you can wisely challenge them.",
+        tags: ["culture","awareness"] },
+      { topic: "history", title: "Local vs global stories",
+        text: "Every global event feels different up close. Local diaries, letters, and newspapers reveal another layer of reality.",
+        tags: ["history","empathy"] },
+      { topic: "history", title: "Slow changes, sudden moments",
+        text: "Revolutions look sudden but are built on long, quiet shifts in belief, trust, and power.",
+        tags: ["history","change"] },
+      { topic: "history", title: "Beware golden ages",
+        text: "Every ‘golden age’ had problems, and every dark era had faithful, creative people. Don’t romanticize or despair too easily.",
+        tags: ["history","perspective"] },
+      { topic: "history", title: "Learn one story at a time",
+        text: "Pick one city, one person, or one year and study it deeply. You’ll see patterns that apply everywhere.",
+        tags: ["history","learning"] },
+
+      // SCIENCE & CURIOSITY
+      { topic: "science", title: "Correlation vs causation",
+        text: "If two things move together, it doesn’t mean one caused the other. Always look for other explanations.",
+        tags: ["reasoning","science"] },
+      { topic: "science", title: "Falsifiable ideas",
+        text: "A scientific claim must be testable in a way that could prove it wrong. If nothing can disprove it, it isn’t science.",
+        tags: ["science","thinking"] },
+      { topic: "science", title: "Order-of-magnitude thinking",
+        text: "Even rough powers-of-ten estimates often beat detailed guesses. Ask: is this 10, 100, or 10,000?",
+        tags: ["math","estimation"] },
+      { topic: "science", title: "Confirmation bias",
+        text: "We notice evidence that agrees with us and ignore what doesn’t. Deliberately seek disconfirming examples.",
+        tags: ["bias","thinking"] },
+      { topic: "science", title: "Feedback loops",
+        text: "Positive feedback amplifies changes; negative feedback stabilizes systems. Many real-world systems have both.",
+        tags: ["systems","science"] },
+      { topic: "science", title: "Big numbers feel weird",
+        text: "Humans are bad at intuiting large scales (time, distance, probability). Use analogies and concrete comparisons.",
+        tags: ["probability","scale"] },
+      { topic: "science", title: "Simple models, useful models",
+        text: "All models are wrong, some are useful. Use simple models to think, but remember where they break.",
+        tags: ["models","science"] },
+      { topic: "science", title: "The power of averages",
+        text: "An average hides the spread. Ask: what’s the range, not just the mean?",
+        tags: ["statistics","thinking"] },
+      { topic: "science", title: "Exponential growth",
+        text: "Exponential curves start slow, then explode. Many technologies, diseases, and investments follow this shape.",
+        tags: ["math","growth"] },
+      { topic: "science", title: "Noise vs signal",
+        text: "Single data points can be noise. Look for patterns across time and context before changing your mind.",
+        tags: ["data","reasoning"] },
+      { topic: "science", title: "Look for base rates",
+        text: "Before judging a specific case, ask: in situations like this in general, what usually happens?",
+        tags: ["probability","base-rates"] },
+      { topic: "science", title: "Curiosity question",
+        text: "A good habit: when something confuses you, write down one clear question about it. Curiosity compounds.",
+        tags: ["curiosity","habits"] },
+
+      // BIBLE & FAITH
+      { topic: "faith", title: "Head, heart, hands",
+        text: "Healthy faith engages what you know (head), what you love (heart), and what you do (hands)—not just one.",
+        tags: ["faith","discipleship"] },
+      { topic: "faith", title: "Small, hidden obedience",
+        text: "Most real growth comes from quiet, unseen faithfulness over years, not dramatic moments.",
+        tags: ["faith","habits"] },
+      { topic: "faith", title: "Interpreting hard passages",
+        text: "Read unclear verses in light of clear ones. Let the main things interpret the confusing things.",
+        tags: ["bible","interpretation"] },
+      { topic: "faith", title: "Community over isolation",
+        text: "The New Testament assumes believers are embedded in a body, not solo. Lone-wolf spirituality gets weird fast.",
+        tags: ["church","community"] },
+      { topic: "faith", title: "Prayers God often answers",
+        text: "Prayers for wisdom, endurance, holiness, and love are always in line with God’s revealed will.",
+        tags: ["prayer","wisdom"] },
+      { topic: "faith", title: "Gospel vs advice",
+        text: "The gospel is news about what Christ has done, not advice about how to fix yourself. Obedience flows from that.",
+        tags: ["gospel","theology"] },
+      { topic: "faith", title: "Habits of remembrance",
+        text: "We leak truth. Regularly rehearse what God has done in Scripture and in your own story so you don’t forget.",
+        tags: ["memory","faith"] },
+      { topic: "faith", title: "Honest lament",
+        text: "Biblical faith includes complaint and grief directed toward God, not away from Him. Psalms are full of this.",
+        tags: ["lament","emotions"] },
+      { topic: "faith", title: "Doctrine in the everyday",
+        text: "Everyone has a functional theology about God, people, and the world. Your daily reactions reveal what you really believe.",
+        tags: ["doctrine","life"] },
+      { topic: "faith", title: "Guard your inputs",
+        text: "What you consistently listen to, watch, and scroll will quietly shape your loves and fears.",
+        tags: ["media","formation"] },
+      { topic: "faith", title: "Small acts of love",
+        text: "Often the most Christlike actions are small: listening well, forgiving first, serving without credit.",
+        tags: ["love","practice"] },
+      { topic: "faith", title: "Faith and planning",
+        text: "Planning and trusting God aren’t opposites. Plan diligently, hold plans loosely, obey clearly.",
+        tags: ["wisdom","planning"] },
+
+      // LIFE SKILLS
+      { topic: "life", title: "Name the tradeoff",
+        text: "Every ‘yes’ is a ‘no’ to something else. Explicitly naming what you’re giving up makes choices wiser.",
+        tags: ["decisions","clarity"] },
+      { topic: "life", title: "Assume good intent (first)",
+        text: "In most everyday conflicts, start by assuming the other person is clumsy, not evil. It changes the conversation.",
+        tags: ["relationships","conflict"] },
+      { topic: "life", title: "Reflect, don’t just react",
+        text: "After a hard day or conflict, ask: what actually happened, what did I feel, and what can I learn?",
+        tags: ["reflection","growth"] },
+      { topic: "life", title: "Ask better questions",
+        text: "Instead of ‘How was your day?’, try ‘What was one thing that surprised you today?’ Specific questions uncover more.",
+        tags: ["communication","questions"] },
+      { topic: "life", title: "Default to clarity",
+        text: "Say what you mean in plain language. ‘Here’s what I’m asking for’ beats hints and vague signals.",
+        tags: ["communication","clarity"] },
+      { topic: "life", title: "Sleep as a keystone habit",
+        text: "Sleep quality quietly affects mood, decisions, appetite, and focus. Guard it like a key meeting.",
+        tags: ["health","habits"] },
+      { topic: "life", title: "Micro-commitments",
+        text: "When starting a new habit, commit to the smallest version that feels almost too easy to skip.",
+        tags: ["habits","behavior"] },
+      { topic: "life", title: "Environment beats willpower",
+        text: "Change your surroundings so the right action is the default, not a heroic effort.",
+        tags: ["environment","habits"] },
+      { topic: "life", title: "Don’t argue from extremes",
+        text: "In disagreements, avoid using rare, extreme examples to prove your point. Talk about the common case first.",
+        tags: ["conflict","reasoning"] },
+      { topic: "life", title: "Summarize what you heard",
+        text: "In tough conversations, repeat back what you think you heard: ‘So you’re saying…’ It reduces confusion fast.",
+        tags: ["listening","communication"] },
+      { topic: "life", title: "Slow down big decisions",
+        text: "Use a different pace for big choices than small ones. Sleep on major decisions at least once.",
+        tags: ["decisions","pace"] },
+      { topic: "life", title: "Stack habits",
+        text: "Attach new habits to existing routines. ‘After I make coffee, I read one page; after I brush, I stretch 2 minutes.’",
+        tags: ["habits","stacking"] }
+    ];
+
+    var REFLECTIONS = [
+      "Where have I already seen this idea show up in my own life or work?",
+      "If I explained this to a 10-year-old, how would I phrase it?",
+      "What’s one decision today that this idea could slightly improve?",
+      "Where does this idea challenge how I usually think or act?",
+      "If I lived this idea for 30 days, what might change?",
+      "What is one concrete example or story that illustrates this?",
+      "Which friend, coworker, or family member would appreciate this idea?",
+      "What’s one question I still have about this idea?"
+    ];
+
+    // --- State ---
+    var currentTopicId = "money"; // default for Today screen
+    var currentLessonIndex = 0;
+    var currentReflectionIndex = 0;
+    var activeTrackId = "all"; // no track selected
+    var quizMode = false;
+    var answerRevealed = true;
+
+    var currentLibraryTopicFilter = "all";
+    var librarySearchQuery = "";
+    var librarySortMode = "default";
+
+    // --- DOM elements ---
+    var todaySubtitleEl = document.getElementById("today-subtitle");
+    var todayLessonTitleEl = document.getElementById("today-lesson-title");
+    var todayLessonTextEl = document.getElementById("today-lesson-text");
+    var topicChipsRow = document.getElementById("topic-chips-row");
+    var quizAnswerRow = document.getElementById("quiz-answer-row");
+    var reflectionTextEl = document.getElementById("reflection-text");
+
+    var btnShuffle = document.getElementById("btn-shuffle");
+    var btnAny = document.getElementById("btn-any");
+    var btnNewReflection = document.getElementById("btn-new-reflection");
+    var btnToggleQuiz = document.getElementById("btn-toggle-quiz");
+    var btnShowAnswer = document.getElementById("btn-show-answer");
+    var btnCopy = document.getElementById("btn-copy");
+
+    var trackSubtitleEl = document.getElementById("track-subtitle");
+    var trackGrid = document.getElementById("track-grid");
+    var topicGrid = document.getElementById("topic-grid");
+    var btnClearTrack = document.getElementById("btn-clear-track");
+
+    var libraryTopicChips = document.getElementById("library-topic-chips");
+    var libraryList = document.getElementById("library-list");
+    var librarySubtitleEl = document.getElementById("library-subtitle");
+    var searchInput = document.getElementById("search-input");
+    var sortSelect = document.getElementById("sort-select");
+
+    var tabButtons = document.querySelectorAll(".tab-btn");
+    var screens = document.querySelectorAll(".screen");
+    var toastEl = document.getElementById("toast");
+    var toastTimeoutId = null;
+
+    // --- Helpers ---
+    function getTopicById(id) {
+      for (var i = 0; i < TOPICS.length; i++) {
+        if (TOPICS[i].id === id) return TOPICS[i];
+      }
+      return null;
+    }
+
+    function getTrackById(id) {
+      for (var i = 0; i < TRACKS.length; i++) {
+        if (TRACKS[i].id === id) return TRACKS[i];
+      }
+      return null;
+    }
+
+    function lessonsInTrack(trackId) {
+      if (trackId === "all") return LESSONS;
+      var track = getTrackById(trackId);
+      if (!track) return LESSONS;
+      var out = [];
+      for (var i = 0; i < LESSONS.length; i++) {
+        if (track.topicIds.indexOf(LESSONS[i].topic) !== -1) {
+          out.push(LESSONS[i]);
+        }
+      }
+      return out;
+    }
+
+    function lessonsForTopicAndTrack(topicId, trackId) {
+      var base = lessonsInTrack(trackId);
+      if (topicId === "all") return base;
+      var out = [];
+      for (var i = 0; i < base.length; i++) {
+        if (base[i].topic === topicId) out.push(base[i]);
+      }
+      return out;
+    }
+
+    function pickRandomIndex(length, exclude) {
+      if (length <= 1) return 0;
+      var idx;
+      do {
+        idx = Math.floor(Math.random() * length);
+      } while (idx === exclude);
+      return idx;
+    }
+
+    function getTodayBaseIndex() {
+      var now = new Date();
+      var days = Math.floor(now.getTime() / 86400000);
+      return days % LESSONS.length;
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("toast-visible");
+      if (toastTimeoutId) clearTimeout(toastTimeoutId);
+      toastTimeoutId = setTimeout(function () {
+        toastEl.classList.remove("toast-visible");
+      }, 1200);
+    }
+
+    // --- Today screen rendering (with quiz mode) ---
+    function renderTopicChips() {
+      topicChipsRow.innerHTML = "";
+
+      // "All (track-based)" chip
+      var allChip = document.createElement("button");
+      allChip.type = "button";
+      allChip.className = "topic-chip" + (currentTopicId === "all" ? " topic-chip-active" : "");
+      allChip.textContent = "🌐 All (track)";
+      allChip.setAttribute("data-topic", "all");
+      topicChipsRow.appendChild(allChip);
+
+      for (var i = 0; i < TOPICS.length; i++) {
+        var t = TOPICS[i];
+        var track = getTrackById(activeTrackId);
+        if (track && track.topicIds.indexOf(t.id) === -1) continue; // hide topics not in active track
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "topic-chip" + (currentTopicId === t.id ? " topic-chip-active" : "");
+        btn.textContent = t.emoji + " " + t.name;
+        btn.setAttribute("data-topic", t.id);
+        topicChipsRow.appendChild(btn);
+      }
+    }
+
+    function renderTodaySubtitle(lesson) {
+      var topic = getTopicById(lesson.topic);
+      var topicLabel = topic ? topic.emoji + " " + topic.name : "Lesson";
+      var track = getTrackById(activeTrackId);
+      if (track) {
+        todaySubtitleEl.textContent =
+          "Track: " + track.emoji + " " + track.name + " · " + topicLabel;
+      } else {
+        todaySubtitleEl.textContent = topicLabel;
+      }
+    }
+
+    function renderTodayLesson() {
+      var pool = lessonsForTopicAndTrack(currentTopicId === "all" ? LESSONS[currentLessonIndex].topic : currentTopicId, activeTrackId);
+      if (!pool.length) return;
+
+      var lesson;
+      if (currentTopicId === "all") {
+        lesson = LESSONS[currentLessonIndex];
+      } else {
+        var count = -1;
+        for (var i = 0; i < LESSONS.length; i++) {
+          if (LESSONS[i].topic === currentTopicId &&
+             (activeTrackId === "all" || lessonsInTrack(activeTrackId).indexOf(LESSONS[i]) !== -1)) {
+            count++;
+            if (count === (currentLessonIndex % pool.length)) {
+              lesson = LESSONS[i];
+              break;
+            }
+          }
+        }
+        if (!lesson) lesson = pool[0];
+      }
+
+      renderTodaySubtitle(lesson);
+      todayLessonTitleEl.textContent = lesson.title;
+
+      if (quizMode && !answerRevealed) {
+        todayLessonTextEl.textContent = "Try to recall the explanation before you reveal it.";
+        quizAnswerRow.style.display = "";
+      } else {
+        todayLessonTextEl.textContent = lesson.text;
+        quizAnswerRow.style.display = quizMode ? "" : "none";
+      }
+    }
+
+    function shuffleInCurrentSubject() {
+      var effectiveTopic = currentTopicId === "all" ? LESSONS[currentLessonIndex].topic : currentTopicId;
+      var pool = lessonsForTopicAndTrack(effectiveTopic, activeTrackId);
+      if (!pool.length) return;
+
+      var oldIndex = -1;
+      var poolList = [];
+      for (var i = 0; i < LESSONS.length; i++) {
+        if (LESSONS[i].topic === effectiveTopic &&
+           (activeTrackId === "all" || lessonsInTrack(activeTrackId).indexOf(LESSONS[i]) !== -1)) {
+          poolList.push(LESSONS[i]);
+          if (i === currentLessonIndex) {
+            oldIndex = poolList.length - 1;
+          }
+        }
+      }
+      if (poolList.length === 0) return;
+
+      var newIndex = pickRandomIndex(poolList.length, oldIndex);
+      var newLesson = poolList[newIndex];
+      currentLessonIndex = LESSONS.indexOf(newLesson);
+      answerRevealed = !quizMode;
+      renderTodayLesson();
+    }
+
+    function surpriseMeAny() {
+      var list = lessonsInTrack(activeTrackId);
+      if (!list.length) return;
+      var oldLesson = LESSONS[currentLessonIndex];
+      var oldPos = list.indexOf(oldLesson);
+      var newPos = pickRandomIndex(list.length, oldPos);
+      var newLesson = list[newPos];
+      currentLessonIndex = LESSONS.indexOf(newLesson);
+      currentTopicId = "all";
+      answerRevealed = !quizMode;
+      renderTopicChips();
+      renderTodayLesson();
+    }
+
+    function renderReflection() {
+      reflectionTextEl.textContent = REFLECTIONS[currentReflectionIndex];
+    }
+
+    function shuffleReflection() {
+      var newIndex = pickRandomIndex(REFLECTIONS.length, currentReflectionIndex);
+      currentReflectionIndex = newIndex;
+      renderReflection();
+    }
+
+    function setQuizMode(on) {
+      quizMode = on;
+      btnToggleQuiz.textContent = "Quiz mode: " + (quizMode ? "On" : "Off");
+      answerRevealed = !quizMode;
+      renderTodayLesson();
+    }
+
+    function showAnswer() {
+      answerRevealed = true;
+      renderTodayLesson();
+    }
+
+    function copyToClipboard() {
+      var lesson = LESSONS[currentLessonIndex];
+      var topic = getTopicById(lesson.topic);
+      var track = getTrackById(activeTrackId);
+      var lines = [];
+
+      lines.push("Lesson: " + lesson.title);
+      if (topic) lines.push("Topic: " + topic.emoji + " " + topic.name);
+      if (track) lines.push("Track: " + track.emoji + " " + track.name);
+      lines.push("");
+      lines.push(lesson.text);
+      lines.push("");
+      lines.push("Reflection: " + reflectionTextEl.textContent);
+
+      var text = lines.join("\n");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(function () {
+            showToast("Copied to clipboard");
+          })
+          .catch(function () {
+            showToast("Copy failed");
+          });
+      } else {
+        showToast("Clipboard not supported");
+      }
+    }
+
+    // --- Tracks & Topics screen ---
+    function renderTrackGrid() {
+      trackGrid.innerHTML = "";
+      for (var i = 0; i < TRACKS.length; i++) {
+        var t = TRACKS[i];
+        var lessonsInThisTrack = lessonsInTrack(t.id).length;
+        var card = document.createElement("div");
+        card.className = "track-card";
+        card.setAttribute("data-track", t.id);
+        card.innerHTML =
+          '<div class="track-card-header">' +
+          '<span class="track-emoji">' + t.emoji + "</span>" +
+          '<span class="track-name">' + t.name + "</span>" +
+          "</div>" +
+          '<div class="track-desc">' + lessonsInThisTrack + " lessons · " + t.desc + "</div>";
+        trackGrid.appendChild(card);
+      }
+
+      var label = activeTrackId === "all"
+        ? "No track selected · you’re seeing all subjects."
+        : "Active: " + getTrackById(activeTrackId).emoji + " " + getTrackById(activeTrackId).name;
+      trackSubtitleEl.textContent = label;
+    }
+
+    function renderTopicGrid() {
+      topicGrid.innerHTML = "";
+      var track = getTrackById(activeTrackId);
+      for (var i = 0; i < TOPICS.length; i++) {
+        var t = TOPICS[i];
+        if (track && track.topicIds.indexOf(t.id) === -1) continue;
+        var count = lessonsForTopicAndTrack(t.id, activeTrackId).length;
+        var card = document.createElement("div");
+        card.className = "topic-card";
+        card.setAttribute("data-topic", t.id);
+        card.innerHTML =
+          '<div class="topic-card-header">' +
+          '<span class="topic-emoji">' + t.emoji + "</span>" +
+          '<span class="topic-name">' + t.name + "</span>" +
+          "</div>" +
+          '<div class="topic-count">' + count + " micro-lessons</div>" +
+          '<div class="topic-desc">' + t.desc + "</div>";
+        topicGrid.appendChild(card);
+      }
+    }
+
+    function setActiveTrack(id) {
+      activeTrackId = id;
+      renderTrackGrid();
+      renderTopicGrid();
+      renderTopicChips();
+      renderTodayLesson();
+      renderLibrary(currentLibraryTopicFilter);
+    }
+
+    function clearTrack() {
+      activeTrackId = "all";
+      renderTrackGrid();
+      renderTopicGrid();
+      renderTopicChips();
+      renderTodayLesson();
+      renderLibrary(currentLibraryTopicFilter);
+    }
+
+    // --- Library (search, sort, tags) ---
+    function renderLibraryTopicChips() {
+      libraryTopicChips.innerHTML = "";
+      var allChip = document.createElement("button");
+      allChip.type = "button";
+      allChip.className = "topic-chip topic-chip-active";
+      allChip.textContent = "🌐 All subjects";
+      allChip.setAttribute("data-topic", "all");
+      libraryTopicChips.appendChild(allChip);
+
+      for (var i = 0; i < TOPICS.length; i++) {
+        var t = TOPICS[i];
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "topic-chip";
+        btn.textContent = t.emoji + " " + t.name;
+        btn.setAttribute("data-topic", t.id);
+        libraryTopicChips.appendChild(btn);
+      }
+    }
+
+    function applyLibraryChipActive(topicId) {
+      var chips = libraryTopicChips.querySelectorAll(".topic-chip");
+      for (var i = 0; i < chips.length; i++) {
+        var chip = chips[i];
+        if (chip.getAttribute("data-topic") === topicId) {
+          chip.classList.add("topic-chip-active");
+        } else {
+          chip.classList.remove("topic-chip-active");
+        }
+      }
+    }
+
+    function filterAndSortLessonsForLibrary() {
+      var list = lessonsInTrack(activeTrackId);
+
+      if (currentLibraryTopicFilter !== "all") {
+        var filtered = [];
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].topic === currentLibraryTopicFilter) {
+            filtered.push(list[i]);
+          }
+        }
+        list = filtered;
+      }
+
+      if (librarySearchQuery) {
+        var q = librarySearchQuery.toLowerCase();
+        var searched = [];
+        for (var j = 0; j < list.length; j++) {
+          var l = list[j];
+          var hay = (l.title + " " + l.text + " " + (l.tags || []).join(" ")).toLowerCase();
+          if (hay.indexOf(q) !== -1) searched.push(l);
+        }
+        list = searched;
+      }
+
+      var arr = list.slice();
+      if (librarySortMode === "title") {
+        arr.sort(function (a, b) {
+          return a.title.localeCompare(b.title);
+        });
+      } else if (librarySortMode === "topic") {
+        arr.sort(function (a, b) {
+          var ta = getTopicById(a.topic);
+          var tb = getTopicById(b.topic);
+          var nameA = ta ? ta.name : "";
+          var nameB = tb ? tb.name : "";
+          var cmp = nameA.localeCompare(nameB);
+          if (cmp !== 0) return cmp;
+          return a.title.localeCompare(b.title);
+        });
+      }
+      return arr;
+    }
+
+    function renderLibrary(topicId) {
+      if (topicId) currentLibraryTopicFilter = topicId;
+      applyLibraryChipActive(currentLibraryTopicFilter);
+
+      var list = filterAndSortLessonsForLibrary();
+      libraryList.innerHTML = "";
+
+      for (var i = 0; i < list.length; i++) {
+        var lesson = list[i];
+        var t = getTopicById(lesson.topic);
+        var div = document.createElement("div");
+        div.className = "list-pill";
+        var html =
+          '<div class="list-pill-title">' + lesson.title + "</div>" +
+          '<div class="list-pill-meta">' + (t ? t.emoji + " " + t.name : "") + "</div>" +
+          '<div class="list-pill-text">' + lesson.text + "</div>";
+        if (lesson.tags && lesson.tags.length) {
+          html += '<div class="tag-row">';
+          for (var j = 0; j < lesson.tags.length; j++) {
+            html += '<span class="tag">' + lesson.tags[j] + "</span>";
+          }
+          html += "</div>";
+        }
+        div.innerHTML = html;
+        libraryList.appendChild(div);
+      }
+
+      var track = getTrackById(activeTrackId);
+      var topicLabel;
+      if (currentLibraryTopicFilter === "all") {
+        topicLabel = "All subjects";
+      } else {
+        var topic = getTopicById(currentLibraryTopicFilter);
+        topicLabel = topic ? topic.emoji + " " + topic.name : "Filtered";
+      }
+      if (track) {
+        librarySubtitleEl.textContent =
+          topicLabel + " · Track: " + track.emoji + " " + track.name;
+      } else {
+        librarySubtitleEl.textContent = topicLabel + " · no track filter.";
+      }
+    }
+
+    // --- Navigation ---
+    function activateScreen(id) {
+      for (var i = 0; i < screens.length; i++) {
+        var s = screens[i];
+        if (s.id === id) s.classList.add("screen-active");
+        else s.classList.remove("screen-active");
+      }
+      for (var j = 0; j < tabButtons.length; j++) {
+        var btn = tabButtons[j];
+        if (btn.getAttribute("data-screen") === id) {
+          btn.classList.add("tab-btn-active");
+        } else {
+          btn.classList.remove("tab-btn-active");
+        }
+      }
+    }
+
+    // --- Event listeners ---
+    btnShuffle.addEventListener("click", shuffleInCurrentSubject);
+    btnAny.addEventListener("click", surpriseMeAny);
+    btnNewReflection.addEventListener("click", shuffleReflection);
+
+    btnToggleQuiz.addEventListener("click", function () {
+      setQuizMode(!quizMode);
+    });
+
+    btnShowAnswer.addEventListener("click", showAnswer);
+    btnCopy.addEventListener("click", copyToClipboard);
+
+    topicChipsRow.addEventListener("click", function (evt) {
+      if (!evt.target.classList.contains("topic-chip")) return;
+      var id = evt.target.getAttribute("data-topic");
+      currentTopicId = id;
+      answerRevealed = !quizMode;
+      renderTopicChips();
+      renderTodayLesson();
+    });
+
+    for (var i = 0; i < tabButtons.length; i++) {
+      tabButtons[i].addEventListener("click", function (evt) {
+        var id = evt.currentTarget.getAttribute("data-screen");
+        activateScreen(id);
+      });
+    }
+
+    trackGrid.addEventListener("click", function (evt) {
+      var card = evt.target.closest(".track-card");
+      if (!card) return;
+      var id = card.getAttribute("data-track");
+      setActiveTrack(id);
+    });
+
+    btnClearTrack.addEventListener("click", clearTrack);
+
+    topicGrid.addEventListener("click", function (evt) {
+      var card = evt.target.closest(".topic-card");
+      if (!card) return;
+      var id = card.getAttribute("data-topic");
+      currentTopicId = id;
+      activateScreen("screen-today");
+      renderTopicChips();
+      renderTodayLesson();
+    });
+
+    libraryTopicChips.addEventListener("click", function (evt) {
+      if (!evt.target.classList.contains("topic-chip")) return;
+      var id = evt.target.getAttribute("data-topic");
+      renderLibrary(id);
+    });
+
+    searchInput.addEventListener("input", function (evt) {
+      librarySearchQuery = evt.target.value || "";
+      renderLibrary(currentLibraryTopicFilter);
+    });
+
+    sortSelect.addEventListener("change", function (evt) {
+      librarySortMode = evt.target.value;
+      renderLibrary(currentLibraryTopicFilter);
+    });
+
+    // --- Init ---
+    (function init() {
+      currentLessonIndex = getTodayBaseIndex();
+      currentReflectionIndex = 0;
+      renderTopicChips();
+      renderTrackGrid();
+      renderTopicGrid();
+      renderLibraryTopicChips();
+      renderTodayLesson();
+      renderReflection();
+      renderLibrary("all");
+    })();
+  </script>
+</body>
+</html>
