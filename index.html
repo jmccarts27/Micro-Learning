@@ -167,21 +167,22 @@
       color: #f9fafb;
     }
 
-    .lesson-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin: 4px 0 6px;
-    }
-
     .lesson-topic-label {
       font-size: 11px;
       color: var(--muted);
       margin-bottom: 4px;
     }
 
+    /* TIP LARGER */
+    .lesson-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 6px 0 8px;
+    }
+
     .lesson-text {
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 15px;
+      line-height: 1.6;
       margin-bottom: 10px;
     }
 
@@ -439,13 +440,16 @@
             </button>
           </div>
         </section>
+      </section>
 
+      <!-- REFLECTION SCREEN (moved into its own tab) -->
+      <section class="screen" id="screen-reflection">
         <section class="card">
           <div class="card-header">
             <div>
               <div class="card-title">Reflection prompt</div>
               <div class="card-subtitle">
-                For your Notes app or journal.
+                Use with Notes, journaling, or voice memos.
               </div>
             </div>
           </div>
@@ -492,6 +496,7 @@
   <nav class="tabbar">
     <div class="tabbar-inner">
       <button class="tab-btn tab-btn-active" data-screen="screen-today">Today</button>
+      <button class="tab-btn" data-screen="screen-reflection">Reflections</button>
       <button class="tab-btn" data-screen="screen-library">Library</button>
     </div>
   </nav>
@@ -508,7 +513,7 @@
       { id: "life",   name: "Life Skills",         emoji: "🧭" }
     ];
 
-    // --- Lessons (same core ideas, shortened to keep code readable) ---
+    // --- Lessons ---
     var LESSONS = [
       // MONEY
       { topic: "money", title: "Pay yourself first",
@@ -670,7 +675,6 @@
     function nextInTopic() {
       var pool = lessonsForTopic(currentTopicId);
       if (!pool.length) return;
-      // find position within this topic
       var indices = [];
       for (var i = 0; i < LESSONS.length; i++) {
         if (LESSONS[i].topic === currentTopicId) indices.push(i);
@@ -812,7 +816,6 @@
       if (!evt.target.classList.contains("topic-chip")) return;
       var id = evt.target.getAttribute("data-topic");
       currentTopicId = id;
-      // Move to first lesson in this topic
       var pool = lessonsForTopic(id);
       if (pool.length) {
         var idx = LESSONS.indexOf(pool[0]);
